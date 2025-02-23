@@ -70,17 +70,10 @@ def create_bucket_instance(request, *args, **kwargs):
 
 @csrf_exempt
 def access_bucket_instance(request, name):
-    if request.method != "GET":
-        return JsonResponse({
-                "error": "Invalid request method",
-                "reasons": ["Expected GET"]
-        }, status=400)
-    try:
-        bucket_instance = BucketInstance.objects.get(name=name)
-    except ObjectDoesNotExist:
-        return JsonResponse({
-            "error": "Bucket instance not found",
-        }, status=400)
+    print(f"Requested bucket name: {name}")
+    bucket_instance = BucketInstance.objects.filter(name=name).first()
+    if not bucket_instance:
+        return JsonResponse({"error: " "Bucket instance not found"}, status=400)
     return JsonResponse({
         "name": bucket_instance.name,
         "bucket_type": bucket_instance.bucket_type,
